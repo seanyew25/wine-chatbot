@@ -87,7 +87,7 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
     return response.text
 
 
-def wine_rag_chat(query):
+def wine_rag_chat(query, chat_history):
     context_strings = []
     data = collection.query(
         query_texts=[query],
@@ -103,7 +103,14 @@ def wine_rag_chat(query):
     prompt = f"""
     You are a wine expert sommelier. Use the following wine information to answer the question.
     If you don't know the answer, say you don't know based on the provided information.
+    Refer to the chat history for additional context.
     If the user asks for a food pairing, talk in depth about how the wine adds to the food pairing
+    Explain your recommendation in detail
+
+
+    # Chat History:
+    chat history: 
+    {chat_history}
 
 
     # Context:
@@ -163,13 +170,15 @@ if wine_type == "Red Wine":
 
 
 
-response = wine_rag_query(query, max_price=(int(price)), acidity=acidity, wine_type=wine_type, tannin=tannin, taste_profile_evaluation=taste_profile_evaluation)
-print(response)
+survey_response = wine_rag_query(query, max_price=(int(price)), acidity=acidity, wine_type=wine_type, tannin=tannin, taste_profile_evaluation=taste_profile_evaluation)
+print(survey_response)
 
 # After the user completes the survey, ask if they want to continue with a normal chat
 print("\nWould you like to ask a wine-related question? (yes/no)")
 user_choice = input("Enter your choice: ")
-
+chat_history = []
+chat_history.append({"role": "user", "content": query})
+chat_history.append({"role": "model", "content": survey_response})
 if user_choice.lower() == "yes":
     print("Feel free to ask your wine-related question!")
     while True:
@@ -179,7 +188,10 @@ if user_choice.lower() == "yes":
             break
         else:
             # Transition to chat mode
-            response = wine_rag_chat(user_query)
+            chat_history_str = str(chat_history)
+            response = wine_rag_chat(user_query, chat_history_str)
+            chat_history.append({"role": "model", "content": response})
+            chat_history.append({"role": "user", "content": user_query})
             print(response)
 else:
     print("Thanks for completing the survey! Enjoy your wine selection.")
