@@ -49,6 +49,11 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
         n_results=k_results,
         where=structured_filters  
     )
+    if len(data["documents"][0]) == 0:
+        data = collection.query(
+            query_texts=[query],
+            n_results=k_results,
+        )
     
     context_strings = []
 
