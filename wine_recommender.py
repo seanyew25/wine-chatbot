@@ -4,7 +4,16 @@ import chromadb
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 import os
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 # Load environment variables
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -65,6 +74,7 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
     If user asks for a taste profile evaluation, evaluate all the other wines provided and give a taste profile evaluation of the user.
     After recommending the primary wine that fits the user's use case and giving the taste profile, provide a list of other wines that fit the user's taste profile.
     Explain why you are recommending the subsequent wines and how they fit the user's taste profile.
+    For the taste profile part, format the response as **Taste Profile Evaluation:** and **Other Wines That Fit Your Taste Profile:**
 
     # Context:
     {final_context}
@@ -174,7 +184,8 @@ def main():
                     parts = survey_response.split("**Taste Profile Evaluation:**")
                     recommendation_part = parts[0]
                     taste_profile_part = parts[1].strip()
-                    st.session_state.taste_profile = taste_profile_part
+                    profile_parts = taste_profile_part.split("**Other Wines That Fit Your Taste Profile:**")
+                    st.session_state.taste_profile = profile_parts[0].strip()
                     display_response = f"{recommendation_part}\n\n**Taste Profile Evaluation:**\n{taste_profile_part}"
                 else:
                     display_response = survey_response
