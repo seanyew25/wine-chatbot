@@ -32,6 +32,11 @@ for idx, row in df.iterrows():
         f"meat_pairing: {row['meat_pairing'] or 'N/A'}",
         f"fermentation_maceration: {row['fermentation_&_maceration'] or 'N/A'}",
         f"seafood_pairing: {row['seafood_pairing'] or 'N/A'}",
+        f"acidity: {row['acidity'] or 'N/A'}",
+        f"aging: {row['aging'] or 'N/A'}",
+        f"product_type: {row['product_type'] or 'N/A'}",
+        f"winemakers: {row['winemakers'] or 'N/A'}",
+
     ])
 
 

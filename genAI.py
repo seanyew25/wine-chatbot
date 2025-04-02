@@ -25,9 +25,9 @@ collection = chroma_client.get_collection(
 
 model = genai.GenerativeModel('gemini-2.0-flash')
 
-def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acidity", wine_type: str = "Red Wine", k_results: int = 3, tannin=None, taste_profile_evaluation=False):
+def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acidity", wine_type: str = "Red Wine", k_results: int = 5, tannin=None, taste_profile_evaluation=False):
 
-
+    # filter based on structured data such as price, acidity, and wine type
     structured_filters = {
         "$and": [
             {"price": {"$lt": max_price}},  # Filter by price range
@@ -66,9 +66,10 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
     prompt = f"""
     You are a wine expert assistant. Use the following wine information to answer the question.
     If you don't know the answer, say you don't know based on the provided information.
-    Do talk a bit about the wine you are recommending to show how it fits the user's use case
-    If user asks for a taste profile evaluation, evaluate all the other wines provided and give a taste profile evaluation of the user
-    and what wines you think the user likes.
+    Explain about the wine you are recommending to show how it fits the user's use case
+    If user asks for a taste profile evaluation, evaluate all the other wines provided and give a taste profile evaluation of the user.
+    After recommending the primary wine that fits the user's use case and giving the taste profile, provide a list of other wines that fit the user's taste profile.
+    Explain why you are recommending the subsequent wines and how they fit the user's taste profile.
 
 
     # Context:
@@ -83,7 +84,6 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
     
 
     response = model.generate_content(prompt)
-    returned_response = f"Gemini says :\n{response.text}"
     return response.text
 
 
@@ -91,7 +91,7 @@ def wine_rag_chat(query, chat_history):
     context_strings = []
     data = collection.query(
         query_texts=[query],
-        n_results=3,
+        n_results=5,
     )
 
     for doc, meta in zip(data["documents"][0], data["metadatas"][0]):
@@ -103,13 +103,13 @@ def wine_rag_chat(query, chat_history):
     prompt = f"""
     You are a wine expert sommelier. Use the following wine information to answer the question.
     If you don't know the answer, say you don't know based on the provided information.
+    Explain about the wine you are recommending to show how it fits the user's use case. You are marketing the wine to the user.
+
     Refer to the chat history for additional context.
-    If the user asks for a food pairing, talk in depth about how the wine adds to the food pairing
-    Explain your recommendation in detail
+
 
 
     # Chat History:
-    chat history: 
     {chat_history}
 
 
@@ -147,13 +147,13 @@ wine_type = input("Enter the type of wine: ")
 print("What flavours do you like?")
 flavour = input("Enter the flavours you like: ")
 
-print("What body style do you like? ")
+print("What body style do you like? Light-bodied, Medium-bodied, or Full-bodied")
 body_style = input("Enter the body style you like: ")
 print("What is the acidity level you like? High Acidity, Medium Acidity, or Low Acidity")
 acidity = input("Enter the acidity level you like: ")
 tannin = None
 if wine_type == "Red Wine":
-    print("What tannin level do you like? ")
+    print("What tannin level do you like? Soft, Medium, or Firm")
     tannin = input("Enter the tannin level you like: ")
 
 print("Would you like an evaluation of your taste profile based on this survey? (yes/no)")
@@ -172,6 +172,8 @@ if wine_type == "Red Wine":
 
 survey_response = wine_rag_query(query, max_price=(int(price)), acidity=acidity, wine_type=wine_type, tannin=tannin, taste_profile_evaluation=taste_profile_evaluation)
 print(survey_response)
+start_index = survey_response.find("Taste Profile Evaluation:")
+taste_profile_evaluation = survey_response[start_index:]
 
 # After the user completes the survey, ask if they want to continue with a normal chat
 print("\nWould you like to ask a wine-related question? (yes/no)")
