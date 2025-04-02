@@ -70,7 +70,7 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
     You are a wine expert assistant. Use the following wine information to answer the question.
     If you don't know the answer, try to use your own knowledge base.
     Explain about the wine you are recommending to show how it fits the user's use case
-    If user asks for a taste profile evaluation, evaluate all the other wines provided and give a taste profile evaluation of the user.
+    Evaluate all the other wines provided and give a taste profile evaluation of the user.
     After recommending the primary wine that fits the user's use case and giving the taste profile, provide a list of other wines that fit the user's taste profile.
     Explain why you are recommending the subsequent wines and how they fit the user's taste profile.
     For the taste profile part, format the response as **Taste Profile Evaluation:** and **Other Wines That Fit Your Taste Profile:**
@@ -80,7 +80,7 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
 
     Question: 
     I want a wine below ${max_price} with {acidity} acidity and type {wine_type}. In addition,
-    {query}. {tannin_query} {taste_profile_evaluation}
+    {query}. {tannin_query} Please evaluate my taste profile.
 
     Answer:
     """
@@ -159,9 +159,9 @@ def main():
                 "What tannin level do you prefer?",
                 ["Soft", "Medium", "Firm"]
             )
-        taste_profile_evaluation = st.checkbox(
-            "Would you like an evaluation of your taste profile based on this survey?"
-        )
+        # taste_profile_evaluation = st.checkbox(
+        #     "Would you like an evaluation of your taste profile based on this survey?"
+        # )
         
         if st.button("Get Wine Recommendations"):
             query = f"Recommend a wine with {flavour} and body {body_style}"
@@ -219,7 +219,7 @@ def main():
                 st.markdown(profile_response)
 
     # Chat section
-    st.markdown("## 💬 Wine Chat Assistant")
+    st.markdown("## 💬 AI Wine Sommelier")
     st.write("Ask me anything about wines! I can provide you with recommendations, food pairings, and more.")
     
     user_query = st.text_input("Your wine question:", key="chat_input")
