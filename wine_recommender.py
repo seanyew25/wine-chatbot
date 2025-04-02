@@ -14,7 +14,8 @@ import os
 
 # Load environment variables
 load_dotenv()
-gemini_api_key = os.getenv("GEMINI_API_KEY")
+# gemini_api_key = os.getenv("GEMINI_API_KEY")
+gemini_api_key = st.secrets["gemini"]["api_key"]
 
 # Configure Gemini API
 genai.configure(api_key=gemini_api_key)
