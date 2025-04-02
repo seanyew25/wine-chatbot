@@ -1,12 +1,17 @@
+try:
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass
+
 import streamlit as st
 import google.generativeai as genai
 import chromadb
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 import os
-import pysqlite3
-import sys
-sys.modules['sqlite3'] = sys.modules['pysqlite3']
+
 # Load environment variables
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
