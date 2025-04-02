@@ -6,7 +6,7 @@ Chatbot that uses RAG with Chroma DB to provide users wine recommendations from 
 Follow these steps to set up the wine chatbot:
 
 1. **Set up Virtual Environment:**
-   - Make sure you have Python 3.8+ installed. 
+   - Make sure you have Python 3.12+ installed. 
    - Create a virtual environment by running:
      ```bash
      python -m venv venv
