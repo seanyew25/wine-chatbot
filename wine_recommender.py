@@ -80,7 +80,7 @@ def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acid
 
     Question: 
     I want a wine below ${max_price} with {acidity} acidity and type {wine_type}. In addition,
-    {query}. {tannin_query} Please evaluate my taste profile.
+    {query}. {tannin_query} {taste_profile_evaluation}
 
     Answer:
     """
@@ -175,7 +175,7 @@ def main():
                     acidity=acidity, 
                     wine_type=wine_type, 
                     tannin=tannin, 
-                    taste_profile_evaluation=taste_profile_evaluation
+                    taste_profile_evaluation=True
                 )
                 
                 # Extract and save taste profile
