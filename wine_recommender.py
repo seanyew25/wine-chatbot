@@ -32,6 +32,7 @@ collection = chroma_client.get_collection(
 )
 
 model = genai.GenerativeModel('gemini-2.0-flash')
+print('gemini model loaded')
 
 def wine_rag_query(query: str, max_price: int = 100, acidity: str = "Medium Acidity", wine_type: str = "Red Wine", k_results: int = 5, tannin=None, taste_profile_evaluation=False):
     # filter based on structured data such as price, acidity, and wine type
