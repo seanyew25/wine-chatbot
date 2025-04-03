@@ -160,9 +160,9 @@ def main():
         )
         tannin = None
         if wine_type == "Red Wine":
-            tannin = st.selectbox(
+            tannin = st.select_slider(
                 "What tannin level do you prefer?",
-                ["Soft", "Medium", "Firm"]
+                ["Soft", "Velvetly", "Silky", "Medium", "Grippy", "Chewy", "Firm", "Abrasive"]
             )
         # taste_profile_evaluation = st.checkbox(
         #     "Would you like an evaluation of your taste profile based on this survey?"
