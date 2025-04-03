@@ -39,7 +39,7 @@ Follow these steps to set up the wine chatbot:
 5. **Run the Chatbot:**
    - Once the setup is complete, run the following command to start the wine chatbot:
      ```bash
-     python genAI.py
+     streamlit run wine_recommender.py
      ```
 
 
